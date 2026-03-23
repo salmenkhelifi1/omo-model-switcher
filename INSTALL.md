@@ -140,5 +140,5 @@ pkill -f opencode && sleep 2 && opencode &
 
 ## Support
 
-- GitHub Issues: https://github.com/salmen7/opencode-model-switcher/issues
+- GitHub Issues: https://github.com/salmenkhelifi1/omo-model-switcher/issues
 - Discord: OpenCode community

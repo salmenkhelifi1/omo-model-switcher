@@ -16,7 +16,8 @@ interface LastError {
 }
 
 async function getActiveAccount(): Promise<string | null> {
-  const homeDir = process.env.HOME || "/home/salmen";
+  const homeDir = process.env.HOME;
+  if (!homeDir) return null;
   const gaPath = path.join(homeDir, ".gemini", "google_accounts.json");
   
   if (!fs.existsSync(gaPath)) return null;
@@ -30,7 +31,8 @@ async function getActiveAccount(): Promise<string | null> {
 }
 
 async function getPendingSignal(): Promise<LastError | null> {
-  const homeDir = process.env.HOME || "/home/salmen";
+  const homeDir = process.env.HOME;
+  if (!homeDir) return null;
   const signalPath = path.join(homeDir, ".gemini", "last_error.json");
   
   if (!fs.existsSync(signalPath)) return null;
@@ -48,7 +50,8 @@ async function getPendingSignal(): Promise<LastError | null> {
 }
 
 async function getAllAccounts(): Promise<AccountInfo[]> {
-  const homeDir = process.env.HOME || "/home/salmen";
+  const homeDir = process.env.HOME;
+  if (!homeDir) return [];
   const indexPath = path.join(homeDir, ".antigravity_cockpit", "gemini_accounts.json");
   
   if (!fs.existsSync(indexPath)) return [];
@@ -62,7 +65,8 @@ async function getAllAccounts(): Promise<AccountInfo[]> {
 }
 
 async function getAccountQuota(accountId: string): Promise<number> {
-  const homeDir = process.env.HOME || "/home/salmen";
+  const homeDir = process.env.HOME;
+  if (!homeDir) return 100;
   const accFile = path.join(homeDir, ".antigravity_cockpit", "gemini_accounts", `${accountId}.json`);
   
   if (!fs.existsSync(accFile)) return 100;
@@ -264,19 +268,24 @@ export const ModelSwitcherPlugin: Plugin = async (ctx) => {
             allHealthy = false;
           }
           
-          const homeDir = process.env.HOME || "/home/salmen";
-          const ocPath = path.join(homeDir, ".gemini", "oauth_creds.json");
-          if (fs.existsSync(ocPath)) {
-            try {
-              const tokens = JSON.parse(fs.readFileSync(ocPath, "utf-8"));
-              const expired = tokens.expiry_date && tokens.expiry_date < Date.now();
-              if (expired) {
-                checks.push("⚠️ OAuth tokens expired - re-authenticate with 'opencode auth login'");
-              } else {
-                checks.push("✅ OAuth tokens valid");
+          const checkHomeDir = process.env.HOME;
+          if (checkHomeDir) {
+            const ocPath = path.join(checkHomeDir, ".gemini", "oauth_creds.json");
+            if (fs.existsSync(ocPath)) {
+              try {
+                const tokens = JSON.parse(fs.readFileSync(ocPath, "utf-8"));
+                const expired = tokens.expiry_date && tokens.expiry_date < Date.now();
+                if (expired) {
+                  checks.push("⚠️ OAuth tokens expired - re-authenticate with 'opencode auth login'");
+                } else {
+                  checks.push("✅ OAuth tokens valid");
+                }
+              } catch {
+                checks.push("❌ OAuth tokens invalid");
+                allHealthy = false;
               }
-            } catch {
-              checks.push("❌ OAuth tokens invalid");
+            } else {
+              checks.push("❌ OAuth tokens not found");
               allHealthy = false;
             }
           } else {

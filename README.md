@@ -7,7 +7,7 @@ Intelligent model switching with Google account auto-rotation for OpenCode.
 - **Automatic account switching** - Switches to next Google account when rate limit (429) is hit
 - **Model fallback chain** - Falls back to MiniMax or GPT-Nano when all accounts exhausted
 - **Health check tools** - Built-in tools to monitor system health
-- **Quota monitoring** - Tracks quota across all 10 Google accounts
+- **Quota monitoring** - Tracks quota across all configured Google accounts
 - **Integration** - Works with `gemini-auto-switch.py` and `opencode-gemini-auth` plugin
 
 ## Installation
@@ -37,7 +37,7 @@ pkill -f opencode && sleep 2 && opencode &
 Ensure you have:
 - [opencode-gemini-auth](https://github.com/jenslys/opencode-antigravity-auth) plugin installed
 - Multiple Google accounts configured in `~/.antigravity_cockpit/gemini_accounts.json`
-- `gemini-auto-switch.py` running (see [gemini-auto-switch repo](https://github.com/salmen7/gemini-auto-switch))
+- `gemini-auto-switch.py` running (see [gemini-auto-switch](https://github.com/salmenkhelifi1/omo-model-switcher) for setup)
 
 ## Available Tools
 
@@ -85,6 +85,8 @@ Call model_switcher_health tool
 
 ## How It Works
 
+This plugin monitors your Google accounts and automatically rotates when quota is exhausted. You need to configure your own accounts - the plugin reads from your local configuration.
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    MODEL SWITCHER FLOW                           │
@@ -123,13 +125,15 @@ Request → Gemini API
 
 ## Configuration Files
 
-| File | Purpose |
-|------|---------|
-| `~/.gemini/google_accounts.json` | Active account selector |
-| `~/.gemini/oauth_creds.json` | OAuth tokens |
-| `~/.gemini/last_error.json` | Rate limit signal |
-| `~/.antigravity_cockpit/gemini_accounts.json` | Account index |
-| `~/.antigravity_cockpit/gemini_accounts/*.json` | Per-account data |
+The plugin reads from your local configuration. You need to set up your own accounts:
+
+| File | Purpose | You Need to Configure |
+|------|---------|----------------------|
+| `~/.gemini/google_accounts.json` | Active account | Your accounts |
+| `~/.gemini/oauth_creds.json` | OAuth tokens | Your auth |
+| `~/.gemini/last_error.json` | Rate limit signal | Auto-generated |
+| `~/.antigravity_cockpit/gemini_accounts.json` | Account index | Your accounts |
+| `~/.antigravity_cockpit/gemini_accounts/*.json` | Per-account data | Your quota data |
 
 ## Adding to oh-my-opencode Skills
 
