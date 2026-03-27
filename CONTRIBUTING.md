@@ -7,12 +7,14 @@ Thank you for your interest in contributing to the OpenCode Model Switcher! Digi
 ### 1. Setup Local Development
 
 1. **Clone the Repository**:
+
    ```bash
    git clone https://github.com/salmenkhelifi1/omo-model-switcher.git
    cd omo-model-switcher
    ```
 
 2. **Install Dependencies**:
+
    ```bash
    npm install
    ```
@@ -24,9 +26,9 @@ Thank you for your interest in contributing to the OpenCode Model Switcher! Digi
 
 - **Build/Type-check**: Before submitting a PR, ensure your changes compile without errors:
 
-    ```bash
-    npm run build
-    ```
+  ```bash
+  npm run build
+  ```
 
 - **State Management**: When modifying how health records or switcher state are saved, **always** use the `saveSwitcherState()` helper to ensure atomic writes and prevent corruption.
 - **Model Support**: If adding support for new models, update the `ALLOWED_MODELS` array and the downgrade routing logic.

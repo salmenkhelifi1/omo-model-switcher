@@ -1,7 +1,7 @@
 {
   "name": "opencode-model-switcher",
   "version": "2.0.0",
-  "description": "Intelligent model switching with Google account auto-rotation for OpenCode",
+  "description": "Intelligent Google Gemini AI model switching with automated account rotation, health tracking, and smart error recovery for OpenCode.",
   "type": "module",
   "main": "opencode-model-switcher.ts",
   "files": [
@@ -20,11 +20,17 @@
     "build": "tsc --noEmit"
   },
   "keywords": [
-    "opencode",
-    "ai",
-    "gemini",
-    "model-switching",
-    "autonomous"
+    "gemini-ai",
+    "google-gemini",
+    "model-switcher",
+    "ai-automation",
+    "opencode-plugin",
+    "rate-limiting",
+    "account-rotation",
+    "api-resilience",
+    "typescript-plugin",
+    "ai-routing",
+    "llm-orchestration"
   ],
   "author": "Salmen Khelifi",
   "license": "MIT",

@@ -1,106 +1,80 @@
-# opencode-model-switcher
+# 🚀 OpenCode Gemini Model Switcher (v2.0)
 
-Intelligent model switching with Google account auto-rotation for OpenCode.
+[![npm version](https://img.shields.io/badge/npm-v2.0.0-blue.svg)](https://www.npmjs.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![OpenCode Plugin](https://img.shields.io/badge/OpenCode-Plugin-orange.svg)](https://opencode.ai)
 
-## Features
+**Intelligent Google Gemini AI model switching with automated account rotation, health tracking, and smart error recovery for OpenCode.**
 
-- **No Antigravity Cockpit required** - Uses OpenCode's built-in auth.
-- **Smart Routing** - Automatically detects errors and rotates accounts or downgrades to Flash/Flash-Lite models.
-- **Account Health System** - Tracks health scores (0-100) and applies severity-based cooldowns (15m for critical, 1m for warnings).
-- **Proxy & Fingerprint Support** - Set unique SOCKS5/HTTP proxies and device fingerprints per account to avoid linkage.
-- **Atomic State Management** - Guaranteed data integrity via atomic JSON writes.
-- **Zero-Config Migration** - Automatically imports your existing `google_accounts.json`.
-
-## Installation
-
-### 1. Install the Plugin
-
-Add to your OpenCode config `~/.config/opencode/opencode.json`:
-
-```json
-{
-  "plugin": [
-    "opencode-gemini-auth@latest",
-    "omo-model-switcher@latest"
-  ]
-}
-```
-
-### 2. Add Commands (Optional)
-
-```json
-{
-  "command": {
-    "model-status": {
-      "template": "Run the model_switcher_status tool and report the results.",
-      "description": "Check account health and proxies"
-    },
-    "model-route": {
-      "template": "Run the model_switcher_smart_route tool.",
-      "description": "Route to the best available account/model"
-    },
-    "model-health": {
-      "template": "Run the model_switcher_health tool.",
-      "description": "System health check"
-    }
-  }
-}
-```### 🔁 Updating the Plugin
-
-To ensure you always have the latest resilience patterns and model routing logic, run:
-
-```bash
-model_switcher_update
-```
-
-This command configures your OpenCode to automatically pull the `@latest` version from npm. After running it, restart OpenCode.
+The **OpenCode Gemini Model Switcher** is a high-performance TypeScript plugin designed to solve the challenges of building reliable AI-powered applications. It provides seamless **account auto-rotation**, **rate-limit management**, and **automated model downgrades** to ensure your Gemini API calls never fail.
 
 ---
 
-## Available Tools
+## 🔥 Key Features
+
+- **🔄 Intelligent Account Rotation** — Automatically cycles through multiple Google accounts based on real-time health and quota availability.
+- **🛡️ Severity-Based Resilience** — Implements smart cooldowns: 15 minutes for critical errors (429, 403, Capacity) and 1 minute for transient server warnings (5xx).
+- **📉 Automated Model Downgrades** — Smart routing detects capacity issues and falls back from `gemini-2.0-flash-thinking` to `gemini-2.0-flash` or `gemini-1.5-flash` instantly.
+- **🌐 Proxy & Fingerprint Support** — Assign unique SOCKS5/HTTP proxies and device identifiers to each account to bypass geographic and anti-bot restrictions.
+- **🏥 Self-Healing Health System** — Accounts "heal" over time, recovering health scores (0-100) automatically after successful cooldown periods.
+- **⚡ OpenCode Native** — Built specifically as a single-file TypeScript plugin for the OpenCode ecosystem.
+
+---
+
+## 🚀 Quick Setup
+
+### 1. Requirements
+
+- [OpenCode](https://opencode.ai) installed.
+- The `opencode-gemini-auth` plugin for Google authentication.
+- Your Google accounts and tokens stored in `~/.gemini/`.
+
+### 2. Installation
+
+The plugin is distributed via npm. Install it directly into your OpenCode project:
+
+```bash
+opencode plugin add omo-model-switcher@latest
+```
+
+### 3. Initialize Settings
+
+Run the initialization tool to set up your account health state:
+
+```bash
+opencode run model_switcher_init
+```
+
+---
+
+## 🛠 Available Tools
 
 | Tool | Description |
-| ---- | ----------- |
-| `model_switcher_init` | Initialize state from existing accounts |
-| `model_switcher_status` | View health scores, cooldowns, and proxies |
-| `model_switcher_smart_route` | **Primary Tool**: Selects best account/model |
-| `model_switcher_health` | Diagnose active error signals |
-| `model_switcher_set_account_proxy` | Set SOCKS5/HTTP proxy for an account |
-| `model_switcher_set_account_fingerprint` | Set device fingerprint for an account |
-| `model_switcher_pin_account` | Force specific account for next session |
-| `model_switcher_reset` | Reset all health scores to 100% |
-| `model_switcher_update` | Update plugin to latest version from npm |
+|---|---|
+| `model_switcher_smart_route` | **The Brain.** Selects the best candidate based on health, proxies, and model requirements. |
+| `model_switcher_status` | **Dashboard.** View all accounts, health scores, and active cooldown timers. |
+| `model_switcher_set_account_proxy` | **Network.** Configure custom SOCKS5/HTTP proxies for specific accounts. |
+| `model_switcher_reset_health` | **Recovery.** Reset health scores for all accounts to 100 instantly. |
+| `model_switcher_update` | **Sync.** Automatically updates OpenCode to use the latest version from npm. |
 
-## How It Works
+---
 
-The plugin acts as a traffic controller between your request and the Gemini API.
+## 🤝 Contributing
 
-1. **Detection**: It reads `~/.gemini/last_error.json` (written by CLI or hooks).
-2. **Analysis**: Classifies errors into `capacity`, `rate_limit`, `auth_expired`, or `server_error`.
-3. **Action**:
-   - **Rotate**: Penalizes the failing account and switches to the healthiest alternative.
-   - **Downgrade**: If all accounts are at capacity for Pro, it switches to Flash or Flash Lite.
-   - **Cooldown**: Applies a 1-15 minute "ice box" based on error severity.
+We ❤️ contributions! Whether it's a bug fix, a new feature, or an SEO improvement, we welcome your help to make Gemini model switching even better.
 
-## Configuration Files
+1. Check out our [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow.
+2. Follow the **Agentic Diamond Standard** for tool definitions.
+3. Ensure your code passes `npm run build` (TypeScript type checking).
 
-| File | Purpose |
-| ---- | ------- |
-| `~/.gemini/switcher_state.json` | **V2 State**: Health, proxies, and error tracking |
-| `~/.gemini/active_fallback.json` | Result of the last routing decision |
-| `~/.gemini/google_accounts.json` | Legacy account list (used for migration) |
-| `~/.gemini/last_error.json` | Error signal input |
+---
 
-## Requirements
+## 📜 License
 
-- OpenCode AI
-- opencode-gemini-auth plugin
-- Python 3 (optional, for external automation)
+Distributed under the **MIT License**. See `LICENSE` for more information.
 
-## Contributing
+---
 
-We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for local development setup and guidelines.
+## 🌍 Keywords
 
-## License
-
-MIT
+`gemini-ai`, `google-gemini`, `model-switcher`, `ai-automation`, `opencode-plugin`, `rate-limiting`, `account-rotation`, `api-resilience`, `typescript-plugin`, `ai-routing`.
